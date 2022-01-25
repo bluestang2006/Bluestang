@@ -10,7 +10,7 @@ vDRM=2.4.109-4
 vGLVND=1.4.0-2
 vMESA=22.0.1-1
 vSDL=2.0.20+dfsg-3
-vVK=1.2.203.0-2
+vVK=1.2.203.0-3
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team

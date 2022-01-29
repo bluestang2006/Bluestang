@@ -14,6 +14,7 @@ vSDL=2.0.20+dfsg-3
 vVK=1.3.204.0-1
 vWL=1.20.90-1
 vWLP=1.25-1
+vWLR=0.15.0-1
 vSTD=0.6.3-2
 vLI=1.19.3-1
 
@@ -65,7 +66,8 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
          vulkan-tools ninja-build libcunit1-dev libcairo2-dev \
          libinput-dev libxml2-dev xmlto docbook-xsl scdoc \
          libsystemd-dev libmtdev-dev check libgtk-3-dev \
-         python3-libevdev python3-pyudev
+         python3-libevdev python3-pyudev libavformat-dev \
+         libavcodec-dev libcap-dev xwayland
 
 fi
 
@@ -328,6 +330,35 @@ fi
 if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" == "$vMESA" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mv3dv is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***WLROOTS***
+MYCOMMENT
+
+if [ "$(dpkg -s  libwlroots-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vWLR" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WLROOTS\e[39m"
+
+DIR="/home/pi/sources/wlroots"
+WLR="$(echo $vWLR| awk '{ print substr( $0, 1, length($0)-2 ) }')"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull
+else
+    cd $SRCSDIR; git clone --single-branch --branch $WLR https://gitlab.freedesktop.org/wlroots/wlroots.git wlroots
+    cd $DIR
+fi
+
+    svn checkout $SVN/wlroots/debian
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WLROOTS\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s  libwlroots-dev | awk '/Version:/{gsub(",","");print $2}')" == "$vWLR" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mWLROOTS is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

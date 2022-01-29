@@ -15,6 +15,7 @@ vVK=1.3.204.0-1
 vWL=1.20.90-1
 vWLP=1.25-1
 vSTD=0.6.3-2
+vLI=1.19.3-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -63,7 +64,9 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
          libatomic-ops-dev libvulkan-dev libglvnd-core-dev \
          vulkan-tools ninja-build libcunit1-dev libcairo2-dev \
          libinput-dev libxml2-dev xmlto docbook-xsl scdoc \
-         libsystemd-dev
+         libsystemd-dev libmtdev-dev check libgtk-3-dev \
+         python3-libevdev python3-pyudev
+
 fi
 
 if [ -d $SRCSDIR ]; then
@@ -160,6 +163,33 @@ fi
 if [ "$(dpkg -s  libseat1 | awk '/Version:/{gsub(",","");print $2}')" == "$vSTD" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mSEATD is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***LIBINPUT***
+MYCOMMENT
+
+if [ "$(dpkg -s  libinput-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vLI" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBINPUT\e[39m"
+
+DIR="/home/pi/sources/libinput"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull
+else
+    cd $SRCSDIR; git clone --single-branch --branch debian-unstable https://salsa.debian.org/xorg-team/lib/libinput.git libinput
+    cd $DIR
+fi
+
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild LIBINPUT\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s  libinput-dev | awk '/Version:/{gsub(",","");print $2}')" == "$vLI" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mLIBINPUT is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

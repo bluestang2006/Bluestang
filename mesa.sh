@@ -99,7 +99,7 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WAYLAND\e[39m"
     build_dpkg
 fi
 
-if [ "$(dpkg -s libwayland-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vWL" ]; then
+if [ "$(dpkg -s libwayland-dev | awk '/Version:/{gsub(",","");print $2}')" == "$vWL" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mWAYLAND is Up-to-Date\e[39m"
 fi
@@ -130,7 +130,7 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WAYLAND PROTOCOLS\e[39m"
     build_dpkg
 fi
 
-if [ "$(dpkg -s wayland-protocols | awk '/Version:/{gsub(",","");print $2}')" != "$vWLP" ]; then
+if [ "$(dpkg -s wayland-protocols | awk '/Version:/{gsub(",","");print $2}')" == "$vWLP" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mWAYLAND PROTOCOLS is Up-to-Date\e[39m"
 fi
@@ -139,7 +139,7 @@ fi
 ***SEATD***
 MYCOMMENT
 
-if [ "$(dpkg -s  libseat-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD" ]; then
+if [ "$(dpkg -s  libseat1 | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SEATD\e[39m"
 
@@ -157,7 +157,7 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SEATD\e[39m"
     build_dpkg
 fi
 
-if [ "$(dpkg -s  libseat-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD" ]; then
+if [ "$(dpkg -s  libseat1 | awk '/Version:/{gsub(",","");print $2}')" == "$vSTD" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mSEATD is Up-to-Date\e[39m"
 fi

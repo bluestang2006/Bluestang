@@ -14,6 +14,7 @@ vSDL=2.0.20+dfsg-3
 vVK=1.3.204.0-1
 vWL=1.20.90-1
 vWLP=1.25-1
+vSTD=0.6.3-2
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -61,7 +62,8 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
          libsamplerate0-dev fcitx-libs-dev libpipewire-0.3-dev \
          libatomic-ops-dev libvulkan-dev libglvnd-core-dev \
          vulkan-tools ninja-build libcunit1-dev libcairo2-dev \
-         libinput-dev libxml2-dev xmlto docbook-xsl
+         libinput-dev libxml2-dev xmlto docbook-xsl scdoc \
+         libsystemd-dev
 fi
 
 if [ -d $SRCSDIR ]; then
@@ -131,6 +133,33 @@ fi
 if [ "$(dpkg -s wayland-protocols | awk '/Version:/{gsub(",","");print $2}')" != "$vWLP" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mWAYLAND PROTOCOLS is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***SEATD***
+MYCOMMENT
+
+if [ "$(dpkg -s  libseat-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SEATD\e[39m"
+
+DIR="/home/pi/sources/seatd"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull
+else
+    cd $SRCSDIR; git clone --single-branch --branch debian/master https://git.devuan.org/devuan/seatd.git seatd
+    cd $DIR
+fi
+
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SEATD\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s  libseat-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mSEATD is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

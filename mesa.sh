@@ -13,6 +13,7 @@ vMESA=22.0.1-4
 vSDL=2.0.20+dfsg-3
 vVK=1.3.204.0-1
 vWL=1.20.90-1
+vWLP=1.25-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -99,6 +100,37 @@ fi
 if [ "$(dpkg -s libwayland-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vWL" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mWAYLAND is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***WAYLAND PROTOCOLS***
+MYCOMMENT
+
+if [ "$(dpkg -s wayland-protocols | awk '/Version:/{gsub(",","");print $2}')" != "$vWLP" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WAYLAND PROTOCOLS\e[39m"
+
+DIR="/home/pi/sources/wayland-protocols"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull
+else
+    cd $SRCSDIR; git clone https://gitlab.freedesktop.org/wayland/wayland-protocols.git wayland-protocols
+    cd $DIR
+fi
+
+    svn checkout $SVN/wayland-protocols/debian
+    cd $DIR/debian; sudo rm -r changelog
+    wget $XORG/wayland/wayland-protocols/-/$LOG
+    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vWLP "Upstream WAYLAND PROTOCOLS"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WAYLAND PROTOCOLS\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s wayland-protocols | awk '/Version:/{gsub(",","");print $2}')" != "$vWLP" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mWAYLAND PROTOCOLS is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

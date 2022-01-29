@@ -6,6 +6,7 @@
 ***DPKG VERSION NUMBERS***
 MYCOMMENT
 
+COUNTER=0
 vDRM=2.4.109-4
 vGLVND=1.4.0-2
 vMESA=22.0.1-4
@@ -18,22 +19,23 @@ LOG=raw/debian-unstable/debian/changelog
 
 build_dpkg()
 {
-    dpkg-buildpackage -b -us -uc                    #build
-    cd ~; sudo dpkg -i *.deb                        #install
-    sudo rm -rv *.deb *.buildinfo *.changes *.udeb  #delete
+    dpkg-buildpackage -b -us -uc
+    cd ~; sudo dpkg -i *.deb
+    sudo rm -rv *.deb *.buildinfo *.changes *.udeb
 }
 
 :<<'MYCOMMENT'
 ***APT UPDATE&UPGRADE/GET BUILD DEPENDENCIES***
 MYCOMMENT
 
-echo -e "\e[1m\e[94m1/17 \e[96mApt Update\e[39m"
-    sudo apt update
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mApt Update & Full-Upgrade\e[39m"
+    sudo apt update && sudo apt full-upgrade -y
 
-echo -e "\e[1m\e[94m2/17 \e[96mApt Full-Upgrade\e[39m"
-    sudo apt full-upgrade -y
+if [ "$(dpkg -s build-essential | awk '/Version:/{gsub(",","");print $2}')" != "12.9" ]; then
 
-echo -e "\e[1m\e[94m3/17 \e[96mInstalling Dependencies\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
     sudo apt install -y libxcb-randr0-dev libxrandr-dev \
          libxcb-xinerama0-dev libxinerama-dev libxcursor-dev \
          libxcb-cursor-dev libxkbcommon-dev xutils-dev \
@@ -56,21 +58,31 @@ echo -e "\e[1m\e[94m3/17 \e[96mInstalling Dependencies\e[39m"
          libclang-cpp11-dev wayland-protocols graphviz doxygen \
          libsamplerate0-dev fcitx-libs-dev libpipewire-0.3-dev \
          libatomic-ops-dev libvulkan-dev libglvnd-core-dev \
-         vulkan-tools ninja-build libcunit1-dev libcairo2-dev
+         vulkan-tools ninja-build libcunit1-dev libcairo2-dev \
+         libudev-dev libpixman-1-dev libinput-dev
+fi
+
 :<<'MYCOMMENT'
 ***VULKAN HEADERS/LOADER***
 MYCOMMENT
 
-if [ $(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}') != "$vVK" ]; then
+if [ -d $SRCSDIR ]; then
+    SRCSDIR="/home/pi/sources/"
+else
+    cd ~; mkdir /home/pi/sources
+    SRCSDIR="/home/pi/sources/"
+fi
 
-echo -e "\e[1m\e[94m4/17 \e[96mGet VULKAN\e[39m"
+if [ "$(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vVK" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN\e[39m"
 
-DIR="/home/pi/vulkan_loader"
+DIR="/home/pi/sources/vulkan_loader"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull; cd vulkan-headers; git pull; cd ..
 else
-    cd ~; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan_loader
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan_loader
     cd $DIR; git clone https://github.com/KhronosGroup/Vulkan-Headers.git vulkan-headers
 fi
 
@@ -78,28 +90,30 @@ fi
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/vulkan/vulkan-loader/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vVK "Upstream VULKAN"
-echo -e "\e[1m\e[94m5/17 \e[96mBuild VULKAN\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN\e[39m"
     build_dpkg
 fi
 
-if [ $(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}') == "$vVK" ]; then
-echo -e "\e[1m\e[94m5/17 \e[96mVULKAN is Up-to-Date\e[39m"
+if [ "$(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}')" == "$vVK" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
 ***LIBDRM***
 MYCOMMENT
 
-if [ $(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}') != "$vDRM" ]; then
+if [ "$(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}')" != "$vDRM" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet MESA DRM\e[39m" 
 
-echo -e "\e[1m\e[94m6/17 \e[96mGet MESA DRM\e[39m" 
-
-DIR="/home/pi/mesa_drm"
+DIR="/home/pi/sources/mesa_drm"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd ~; git clone --single-branch --branch main https://github.com/freedesktop/mesa-drm.git mesa_drm
+    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa-drm.git mesa_drm
     cd $DIR;
 fi
 
@@ -107,122 +121,132 @@ fi
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/lib/libdrm/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vDRM "Upstream LIBDRM"
-echo -e "\e[1m\e[94m7/17 \e[96mBuild MESA DRM\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild MESA DRM\e[39m"
     build_dpkg
 fi
 
-if [ $(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}') == "$vDRM" ]; then
-echo -e "\e[1m\e[94m7/17 \e[96mMESA DRM is Up-to-Date\e[39m"
+if [ "$(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}')" == "$vDRM" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mMESA DRM is Up-to-Date\e[39m"
 fi
 
 DIR="/opt/retropie/supplementary/mesa-drm"
 
 if [ -d "$DIR" ]; then
-echo -e "\e[1m\e[94m8/17 \e[96mCopy MESA DRM to RetroPie\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mCopy MESA DRM to RetroPie\e[39m"
     sudo cp -v /usr/lib/aarch64-linux-gnu/libdrm.so.2.4.0 /opt/retropie/supplementary/mesa-drm
     cd $DIR; sudo ln -sf libdrm.so.2.4.0 libdrm.so.2
 else
-echo -e "\e[1m\e[94m8/17 \e[96mRetroPie Not Installed - Moving On\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mRetroPie Not Installed - Moving On\e[39m"
 fi
 
 :<<'MYCOMMENT'
 ***LIBGLVND***
 MYCOMMENT
 
-if [ $(dpkg -s libglvnd-dev | awk '/Version:/{gsub(",","");print $2}') == "1.3.2-1" ]; then
+if [ "$(dpkg -s libglvnd-dev | awk '/Version:/{gsub(",","");print $2}')" == "1.3.2-1" ]; then
 sudo dpkg -r --force-depends libglvnd-dev
 fi
 
-if [ $(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}') != "$vGLVND" ]; then
+if [ "$(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}')" != "$vGLVND" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBGLVND\e[39m" 
 
-echo -e "\e[1m\e[94m9/17 \e[96mGet LIBGLVND\e[39m" 
-
-DIR="/home/pi/mesa_glvnd"
+DIR="/home/pi/sources/mesa_glvnd"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd ~; git clone --single-branch --branch master https://github.com/NVIDIA/libglvnd.git mesa_glvnd
+    cd $SRCSDIR; git clone --single-branch --branch master https://github.com/NVIDIA/libglvnd.git mesa_glvnd
     cd $DIR;
 fi
     svn checkout $SVN/libglvnd/debian
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/lib/libglvnd/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vGLVND "Upstream LIBGLVND"
-echo -e "\e[1m\e[94m10/17 \e[96mBuild LIBGLVND\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild LIBGLVND\e[39m"
     build_dpkg
 fi
 
-if [ $(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}') == "$vGLVND" ]; then
-echo -e "\e[1m\e[94m10/17 \e[96mLIBGLVND is Up-to-Date\e[39m"
+if [ "$(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}')" == "$vGLVND" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mLIBGLVND is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
 ***MESA***
 MYCOMMENT
 
-if [ $(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}') != "$vMESA" ]; then
+if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" != "$vMESA" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet v3dv\e[39m"
 
-echo -e "\e[1m\e[94m11/17 \e[96mGet v3dv\e[39m"
-
-DIR="/home/pi/mesa_vulkan"
+DIR="/home/pi/sources/mesa_vulkan"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd ~; git clone --single-branch --branch main https://github.com/freedesktop/mesa.git mesa_vulkan
+    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa.git mesa_vulkan
     cd $DIR;
 fi
     svn checkout $SVN/mesa/debian
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/lib/mesa/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vMESA "Upstream MESA"
-echo -e "\e[1m\e[94m12/17 \e[96mBuild v3dv\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild v3dv\e[39m"
     build_dpkg
 fi
 
-if [ $(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}') == "$vMESA" ]; then
-echo -e "\e[1m\e[94m12/17 \e[96mv3dv is Up-to-Date\e[39m"
+if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" == "$vMESA" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mv3dv is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
 ***VULKAN-TOOLS***
 MYCOMMENT
 
-if [ $(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}') != "$vVK" ]; then
-
-echo -e "\e[1m\e[94m13/17 \e[96mGet VULKAN TOOLS\e[39m" 
+if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vVK" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN TOOLS\e[39m" 
 
 DIR="/home/pi/vulkan_tools"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd ~; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan_tools
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan_tools
     cd $DIR;
 fi
     svn checkout $SVN/vulkan-tools/debian
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/vulkan/vulkan-tools/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vVK "Upstream VULKAN TOOLS"
-echo -e "\e[1m\e[94m14/17 \e[96mBuild VULKAN TOOLS\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN TOOLS\e[39m"
     build_dpkg
 fi
 
-if [ $(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}') == "$vVK" ]; then
-echo -e "\e[1m\e[94m14/17 \e[96mVULKAN TOOLS is Up-to-Date\e[39m"
+if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" == "$vVK" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN TOOLS is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
 ***SDL2***
 MYCOMMENT
 
-if [ $(dpkg -s libsdl2-dev | awk '/Version:/{gsub(",","");print $2}') != "$vSDL" ]; then
+if [ "$(dpkg -s libsdl2-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSDL" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SDL2\e[39m"
 
-echo -e "\e[1m\e[94m15/17 \e[96mGet SDL2\e[39m"
-
-DIR="/home/pi/SDL"
-SDL=$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')
+DIR="/home/pi/sources/SDL"
+SDL="$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -234,20 +258,24 @@ fi
     cd $DIR/debian; sudo rm -r changelog
     wget https://salsa.debian.org/sdl-team/libsdl2/-/raw/master/debian/changelog
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vSDL "Upstream SDL2"
-echo -e "\e[1m\e[94m16/17 \e[96mBuild SDL2\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SDL2\e[39m"
     build_dpkg
 fi
 
-if [ $(dpkg -s libsdl2-dev | awk '/Version:/{gsub(",","");print $2}') == "$vSDL" ]; then
-echo -e "\e[1m\e[94m16/17 \e[96mSDL2 is Up-to-Date\e[39m"
+if [ "$(dpkg -s libsdl2-dev | awk '/Version:/{gsub(",","");print $2}')" == "$vSDL" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mSDL2 is Up-to-Date\e[39m"
 fi
 	
 :<<'MYCOMMENT'
 ***VERIFY PKGS***
 MYCOMMENT
 
-echo -e "\e[1m\e[94m17/17 \e[96mDisplay Updated Mesa Driver\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mDisplay Updated Mesa Driver\e[39m"
     vulkaninfo | grep 'apiVersion\|driverVersion\|deviceName\|Vulkan Instance Version'
     glxinfo -B
-echo -e "\e[1m\e[94m17/17 \e[96mSDL2 Version:\e[39m"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mSDL2 Version:\e[39m"
     sdl2-config --version

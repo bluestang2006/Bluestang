@@ -12,6 +12,7 @@ vGLVND=1.4.0-2
 vMESA=22.0.1-4
 vSDL=2.0.20+dfsg-3
 vVK=1.3.204.0-1
+vWL=1.20.90-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -20,7 +21,7 @@ LOG=raw/debian-unstable/debian/changelog
 build_dpkg()
 {
     dpkg-buildpackage -b -us -uc
-    cd ~; sudo dpkg -i *.deb
+    cd $SRCSDIR; sudo dpkg -i *.deb
     sudo rm -rv *.deb *.buildinfo *.changes *.udeb
 }
 
@@ -54,24 +55,55 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
          quilt xsltproc python3-libxml2 xvfb subversion \
          devscripts libv4l-dev python3-pip python3-docutils \
          sqlite3 libsensors-dev libvdpau-dev python3-mako \
-         libwayland-egl-backend-dev llvm-11-dev libclang-11-dev \
-         libclang-cpp11-dev wayland-protocols graphviz doxygen \
+         llvm-11-dev libclang-11-dev graphviz doxygen \
+         libclang-cpp11-dev libudev-dev libpixman-1-dev \
          libsamplerate0-dev fcitx-libs-dev libpipewire-0.3-dev \
          libatomic-ops-dev libvulkan-dev libglvnd-core-dev \
          vulkan-tools ninja-build libcunit1-dev libcairo2-dev \
-         libudev-dev libpixman-1-dev libinput-dev
+         libinput-dev libxml2-dev xmlto docbook-xsl
+fi
+
+if [ -d $SRCSDIR ]; then
+    SRCSDIR="/home/pi/sources/"
+else
+    cd $HOME; mkdir sources
+    SRCSDIR="/home/pi/sources/"
+fi
+
+:<<'MYCOMMENT'
+***WAYLAND***
+MYCOMMENT
+
+if [ "$(dpkg -s libwayland-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vWL" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WAYLAND\e[39m"
+
+DIR="/home/pi/sources/wayland"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull
+else
+    cd $SRCSDIR; git clone https://gitlab.freedesktop.org/wayland/wayland.git wayland
+    cd $DIR
+fi
+
+    svn checkout $SVN/wayland/debian
+    cd $DIR/debian; sudo rm -r changelog
+    wget $XORG/wayland/wayland/-/$LOG
+    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vWL "Upstream WAYLAND"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WAYLAND\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s libwayland-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vWL" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mWAYLAND is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
 ***VULKAN HEADERS/LOADER***
 MYCOMMENT
-
-if [ -d $SRCSDIR ]; then
-    SRCSDIR="/home/pi/sources/"
-else
-    cd ~; mkdir /home/pi/sources
-    SRCSDIR="/home/pi/sources/"
-fi
 
 if [ "$(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vVK" ]; then
 let COUNTER++
@@ -114,7 +146,7 @@ if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
     cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa-drm.git mesa_drm
-    cd $DIR;
+    cd $DIR
 fi
 
     svn checkout $SVN/libdrm/debian
@@ -161,7 +193,7 @@ if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
     cd $SRCSDIR; git clone --single-branch --branch master https://github.com/NVIDIA/libglvnd.git mesa_glvnd
-    cd $DIR;
+    cd $DIR
 fi
     svn checkout $SVN/libglvnd/debian
     cd $DIR/debian; sudo rm -r changelog
@@ -191,7 +223,7 @@ if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
     cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa.git mesa_vulkan
-    cd $DIR;
+    cd $DIR
 fi
     svn checkout $SVN/mesa/debian
     cd $DIR/debian; sudo rm -r changelog
@@ -221,7 +253,7 @@ if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
     cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan_tools
-    cd $DIR;
+    cd $DIR
 fi
     svn checkout $SVN/vulkan-tools/debian
     cd $DIR/debian; sudo rm -r changelog

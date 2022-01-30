@@ -17,6 +17,7 @@ vWLP=1.25-1
 vWLR=0.15.0-1
 vSTD=0.6.3-2
 vLI=1.19.3-1
+vMSN=0.61.1-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -75,6 +76,25 @@ if [ -d "$HOME/sources" ]; then
 else
     cd $HOME; mkdir sources
     SRCSDIR="/home/pi/sources/"
+fi
+
+:<<'MYCOMMENT'
+***MESON***
+MYCOMMENT
+
+if [ "$(dpkg -s meson | awk '/Version:/{gsub(",","");print $2}')" != "$vMSN" ]; then
+cd $SRCSDIR
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet MESON v$vMSN\e[39m"
+    wget http://http.us.debian.org/debian/pool/main/m/meson/meson_"$vMSN"_all.deb
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mInstall MESON v$vMSN\e[39m"
+    sudo dpkg -i *.deb; sudo rm -v *.deb
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mMESON is Up-to-Date\e[39m"
+else
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mMESON is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

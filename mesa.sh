@@ -37,7 +37,7 @@ let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mApt Update & Full-Upgrade\e[39m"
     sudo apt update && sudo apt full-upgrade -y
 
-if [ "$(dpkg -s build-essential | awk '/Version:/{gsub(",","");print $2}')" != "12.9" ]; then
+if [ "$(dpkg -s subversion | awk '/Version:/{gsub(",","");print $2}')" != "1.14.1-3" ]; then
 
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
@@ -50,14 +50,14 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
          x11proto-dri3-dev libx11-dev libxcb-glx0-dev debhelper \
          libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev \
          libva-dev x11proto-randr-dev x11proto-present-dev \
-         libclc-dev libelf-dev git build-essential mesa-utils \
+         libclc-dev libelf-dev mesa-utils xwayland libcap-dev \
          libgbm-dev libxshmfence-dev libxxf86vm-dev valgrind \
          libunwind-dev libzstd-dev googletest cmake meson \
          spirv-tools spirv-headers glslang-tools glslang-dev \
          libevdev-dev mesa-utils mesa-utils-extra dos2unix \
          libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev \
          quilt xsltproc python3-libxml2 xvfb subversion \
-         devscripts libv4l-dev python3-pip python3-docutils \
+         devscripts libv4l-dev libavcodec-dev libavformat-dev \
          sqlite3 libsensors-dev libvdpau-dev python3-mako \
          llvm-11-dev libclang-11-dev graphviz doxygen \
          libclang-cpp11-dev libudev-dev libpixman-1-dev \
@@ -66,12 +66,11 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
          vulkan-tools ninja-build libcunit1-dev libcairo2-dev \
          libinput-dev libxml2-dev xmlto docbook-xsl scdoc \
          libsystemd-dev libmtdev-dev check libgtk-3-dev \
-         python3-libevdev python3-pyudev libavformat-dev \
-         libavcodec-dev libcap-dev xwayland
+         python3-libevdev python3-pyudev 
 
 fi
 
-if [ -d $SRCSDIR ]; then
+if [ -d "$HOME/sources" ]; then
     SRCSDIR="/home/pi/sources/"
 else
     cd $HOME; mkdir sources

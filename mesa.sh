@@ -18,6 +18,7 @@ vWLR=0.15.0-1
 vSTD=0.6.3-2
 vLI=1.19.3-1
 vMSN=0.61.1-1
+vLD=0.1.0-3
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -95,6 +96,33 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mMESON is Up-to-Date\e[39m"
 else
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mMESON is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***LIBDECOR***
+MYCOMMENT
+
+if [ "$(dpkg -s  libdecor-0-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vLD" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBDECOR\e[39m"
+
+DIR="/home/pi/sources/libdecor-0"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull
+else
+    cd $SRCSDIR; git clone --single-branch --branch debian/latest https://salsa.debian.org/sdl-team/libdecor-0.git libdecor-0
+    cd $DIR
+fi
+
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild LIBDECOR\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s  libdecor-0-dev | awk '/Version:/{gsub(",","");print $2}')" == "$vLD" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mLIBDECOR is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

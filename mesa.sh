@@ -308,7 +308,7 @@ MYCOMMENT
 
 if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" != "$vMESA" ]; then
 let COUNTER++
-echo -e "\e[1m\e[94m$COUNTER. \e[96mGet v3dv\e[39m"
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet V3DV\e[39m"
 
 DIR="/home/pi/sources/mesa_vulkan"
 
@@ -323,13 +323,13 @@ fi
     wget $XORG/lib/mesa/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vMESA "Upstream MESA"
 let COUNTER++
-echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild v3dv\e[39m"
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild V3DV\e[39m"
     build_dpkg
 fi
 
 if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" == "$vMESA" ]; then
 let COUNTER++
-echo -e "\e[1m\e[94m$COUNTER. \e[96mv3dv is Up-to-Date\e[39m"
+echo -e "\e[1m\e[94m$COUNTER. \e[96mV3DV is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
@@ -369,7 +369,7 @@ if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vV
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN TOOLS\e[39m" 
 
-DIR="/home/pi/vulkan_tools"
+DIR="/home/pi/sources/vulkan_tools"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -405,7 +405,7 @@ SDL="$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd ~; git clone --single-branch --branch release-$SDL https://github.com/libsdl-org/SDL.git SDL
+    cd $SRCSDIR; git clone --single-branch --branch release-$SDL https://github.com/libsdl-org/SDL.git SDL
     cd $DIR; sudo rm -r debian
 fi
     svn checkout $SVN/SDL/debian

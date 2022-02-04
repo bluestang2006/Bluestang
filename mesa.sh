@@ -250,14 +250,15 @@ let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN\e[39m"
 
 DIR="/home/pi/sources/vulkan_loader"
+VK="$(echo v$vVK | awk '{ print substr( $0, 1, length($0)-4 ) }')"
 
 if [ -d "$DIR" ]; then
-    cd $DIR; git pull; cd vulkan-headers; git pull; cd ..
+    cd $DIR; git pull; cd vulkan-headers; git pull; cd $DIR
 else
     cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan_loader
-    cd $DIR; git clone https://github.com/KhronosGroup/Vulkan-Headers.git vulkan-headers
+    cd $DIR; git clone https://github.com/KhronosGroup/Vulkan-Headers.git vulkan-headers;
 fi
-
+    git checkout $VK; cd vulkan-headers; git checkout $VK; cd $DIR
     svn checkout $SVN/vulkan/debian
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/vulkan/vulkan-loader/-/$LOG
@@ -419,11 +420,12 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN TOOLS\e[39m"
 DIR="/home/pi/sources/vulkan_tools"
 
 if [ -d "$DIR" ]; then
-    cd $DIR; git pull
+    cd $DIR; git pull;
 else
     cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan_tools
     cd $DIR
 fi
+    git checkout $VK
     svn checkout $SVN/vulkan-tools/debian
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/vulkan/vulkan-tools/-/$LOG

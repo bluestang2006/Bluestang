@@ -459,7 +459,7 @@ fi
     git checkout $VK
     svn checkout $SVN/vulkan-layers/debian
     cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/vulkan/vulkan-layers/-/$LOG
+    wget $XORG/vulkan/vulkan-validationlayers/-/$LOG
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vVK "Upstream VULKAN VALIDATION LAYERS"
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN-VALIDATIONLAYERS\e[39m"

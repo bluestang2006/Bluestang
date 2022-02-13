@@ -441,6 +441,37 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN TOOLS is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'
+***VULKAN-VALIDATIONLAYERS***
+MYCOMMENT
+
+if [ "$(dpkg -s vulkan-validationlayers | awk '/Version:/{gsub(",","");print $2}')" != "$vVK" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN-VALIDATIONLAYERS\e[39m" 
+
+DIR="/home/pi/sources/vulkan-layers"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull;
+else
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-ValidationLayers.git vulkan-layers
+    cd $DIR
+fi
+    git checkout $VK
+    svn checkout $SVN/vulkan-layers/debian
+    cd $DIR/debian; sudo rm -r changelog
+    wget $XORG/vulkan/vulkan-layers/-/$LOG
+    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vVK "Upstream VULKAN VALIDATION LAYERS"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN-VALIDATIONLAYERS\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s vulkan-validationlayers | awk '/Version:/{gsub(",","");print $2}')" == "$vVK" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN-VALIDATIONLAYERS is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
 ***SDL2***
 MYCOMMENT
 
@@ -448,13 +479,13 @@ if [ "$(dpkg -s libsdl2-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSD
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SDL2\e[39m"
 
-DIR="/home/pi/sources/SDL"
+DIR="/home/pi/sources/SDL2"
 SDL="$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch release-$SDL https://github.com/libsdl-org/SDL.git SDL
+    cd $SRCSDIR; git clone --single-branch --branch release-$SDL https://github.com/libsdl-org/SDL.git SDL2
     cd $DIR; sudo rm -r debian
 fi
     svn checkout $SVN/SDL/debian

@@ -281,12 +281,12 @@ if [ "$(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}')" != "$vDRM" ]
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet MESA DRM\e[39m" 
 
-DIR="/home/pi/sources/mesa_drm"
+DIR="/home/pi/sources/mesa-drm"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa-drm.git mesa_drm
+    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa-drm.git mesa-drm
     cd $DIR
 fi
 
@@ -328,12 +328,12 @@ if [ "$(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}')" != "$vGLVN
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBGLVND\e[39m" 
 
-DIR="/home/pi/sources/mesa_glvnd"
+DIR="/home/pi/sources/mesa-glvnd"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch master https://github.com/NVIDIA/libglvnd.git mesa_glvnd
+    cd $SRCSDIR; git clone --single-branch --branch master https://github.com/NVIDIA/libglvnd.git mesa-glvnd
     cd $DIR
 fi
     svn checkout $SVN/libglvnd/debian
@@ -358,12 +358,12 @@ if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" != "$vMESA" 
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet V3DV\e[39m"
 
-DIR="/home/pi/sources/mesa_vulkan"
+DIR="/home/pi/sources/mesa-vulkan"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa.git mesa_vulkan
+    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa.git mesa-vulkan
     cd $DIR
 fi
     svn checkout $SVN/mesa/debian
@@ -417,12 +417,12 @@ if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vV
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN TOOLS\e[39m" 
 
-DIR="/home/pi/sources/vulkan_tools"
+DIR="/home/pi/sources/vulkan-tools"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
 else
-    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan_tools
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan-tools
     cd $DIR
 fi
     git checkout $VK

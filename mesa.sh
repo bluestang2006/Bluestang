@@ -19,6 +19,8 @@ vSTD=0.6.3-2
 vLI=1.19.3-1
 vMSN=0.61.1-1
 vLD=0.1.0-3
+vSV=1.6-1
+vSVT=2022.1-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
@@ -249,13 +251,13 @@ if [ "$(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}')" != "$v
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN\e[39m"
 
-DIR="/home/pi/sources/vulkan_loader"
+DIR="/home/pi/sources/vulkan-loader"
 VK="$(echo v$vVK | awk '{ print substr( $0, 1, length($0)-4 ) }')"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull; cd vulkan-headers; git pull; cd $DIR
 else
-    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan_loader
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan-loader
     cd $DIR; git clone https://github.com/KhronosGroup/Vulkan-Headers.git vulkan-headers;
 fi
     git checkout $VK; cd vulkan-headers; git checkout $VK; cd $DIR
@@ -438,6 +440,68 @@ fi
 if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" == "$vVK" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN TOOLS is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***SPIRV-HEADERS***
+MYCOMMENT
+
+if [ "$(dpkg -s spirv-headers | awk '/Version:/{gsub(",","");print $2}')" != "$vSV" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SPIRV-HEADERS\e[39m" 
+
+DIR="/home/pi/sources/spirv-headers"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull;
+else
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/SPIRV-Headers.git spirv-headers
+    cd $DIR
+fi
+    #git checkout $VK
+    svn checkout $SVN/spirv-headers/debian
+    cd $DIR/debian; sudo rm -r changelog
+    wget $XORG/vulkan/spirv-headers/-/$LOG
+    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vSV "Upstream SPIRV-HEADERS"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SPIRV-HEADERS\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s spirv-headers | awk '/Version:/{gsub(",","");print $2}')" == "$vSV" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mSPIRV-HEADERS is Up-to-Date\e[39m"
+fi
+
+:<<'MYCOMMENT'
+***SPIRV-TOOLS***
+MYCOMMENT
+
+if [ "$(dpkg -s spirv-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vSVT" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SPIRV-TOOLS\e[39m" 
+
+DIR="/home/pi/sources/spirv-tools"
+
+if [ -d "$DIR" ]; then
+    cd $DIR; git pull;
+else
+    cd $SRCSDIR; git clone https://github.com/KhronosGroup/SPIRV-Tools.git spirv-tools
+    cd $DIR
+fi
+    #git checkout $VK
+    svn checkout $SVN/spirv-tools/debian
+    cd $DIR/debian; sudo rm -r changelog
+    wget $XORG/vulkan/spirv-tools/-/$LOG
+    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vSVT "Upstream SPIRV-TOOLS"
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SPIRV-TOOLS\e[39m"
+    build_dpkg
+fi
+
+if [ "$(dpkg -s spirv-tools | awk '/Version:/{gsub(",","");print $2}')" == "$vSVT" ]; then
+let COUNTER++
+echo -e "\e[1m\e[94m$COUNTER. \e[96mSPIRV-HEADERS is Up-to-Date\e[39m"
 fi
 
 :<<'MYCOMMENT'

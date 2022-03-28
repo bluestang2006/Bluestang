@@ -9,7 +9,7 @@ MYCOMMENT
 COUNTER=0
 vDRM=2.4.110-2
 vGLVND=1.4.0-3
-vMESA=22.1.0-24
+vMESA=22.1.0-25
 vSDL=2.0.20+dfsg-3
 vVK=1.3.205.0-1
 vWL=1.20.90-1
@@ -19,8 +19,8 @@ vSTD=0.6.3-2
 vLI=1.19.3-1
 vMSN=0.61.1-1
 vLD=0.1.0-3
-vSV=1.6-1
-vSVT=2022.1-1
+vSV=1.6.1-1
+vSVT=2022.1-2
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team

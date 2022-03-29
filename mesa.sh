@@ -24,7 +24,9 @@ vSVT=2022.1+1.3.209.0-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
+WLR=https://salsa.debian.org/swaywm-team
 LOG=raw/debian-unstable/debian/changelog
+LOG2=/raw/debian/sid/debian/changelog
 
 build_dpkg()
 {
@@ -399,8 +401,10 @@ else
     cd $SRCSDIR; git clone --single-branch --branch $WLR https://gitlab.freedesktop.org/wlroots/wlroots.git wlroots
     cd $DIR
 fi
-
     svn checkout $SVN/wlroots/debian
+    cd $DIR/debian; sudo rm -r changelog
+    wget $WLR/wlroots-/$LOG
+    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vWLR "Upstream Wayland Roots"
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WLROOTS\e[39m"
     build_dpkg

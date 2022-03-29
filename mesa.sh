@@ -19,8 +19,8 @@ vSTD=0.6.4-1
 vLI=1.20.0-1
 vMSN=0.61.1-1
 vLD=0.1.0-3
-vSV=1.6.1-1
-vSVT=2022.1-2
+vSV=1.6.1+1.3.209.0-1
+vSVT=2022.1+1.3.209.0-1
 
 SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team

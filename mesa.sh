@@ -26,7 +26,7 @@ SVN=https://github.com/bluestang2006/Debian-Pkgs/trunk
 XORG=https://salsa.debian.org/xorg-team
 WLR=https://salsa.debian.org/swaywm-team
 LOG=raw/debian-unstable/debian/changelog
-LOG2=/raw/debian/sid/debian/changelog
+LOG2=raw/debian/sid/debian/changelog
 
 build_dpkg()
 {

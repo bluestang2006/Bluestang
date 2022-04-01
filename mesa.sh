@@ -393,12 +393,11 @@ let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WLROOTS\e[39m"
 
 DIR="/home/pi/sources/wlroots"
-WLR="$(echo $vWLR| awk '{ print substr( $0, 1, length($0)-2 ) }')"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch $WLR https://gitlab.freedesktop.org/wlroots/wlroots.git wlroots
+    cd $SRCSDIR; git clone https://gitlab.freedesktop.org/wlroots/wlroots.git wlroots
     cd $DIR
 fi
     svn checkout $SVN/wlroots/debian

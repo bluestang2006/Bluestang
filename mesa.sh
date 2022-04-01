@@ -402,7 +402,7 @@ else
 fi
     svn checkout $SVN/wlroots/debian
     cd $DIR/debian; sudo rm -r changelog
-    wget $WLR/wlroots-/$LOG2
+    wget $WLR/wlroots/-/$LOG2
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vWLR "Upstream Wayland Roots"
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WLROOTS\e[39m"

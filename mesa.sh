@@ -33,10 +33,10 @@ build_dpkg()
     dpkg-buildpackage -b -us -uc
     cd $SRCSDIR; sudo dpkg -i *.deb
     if [ -d "$DIR-debfiles" ]; then
-        cp -v *.deb *.buildinfo *.changes *.udeb $DIR-debfiles
+        mv -v *.deb *.buildinfo *.changes *.udeb $DIR-debfiles
     else
         mkdir $DIR-debfiles
-        cp -v *.deb *.buildinfo *.changes *.udeb $DIR-debfiles
+        mv -v *.deb *.buildinfo *.changes *.udeb $DIR-debfiles
     fi
 }
 

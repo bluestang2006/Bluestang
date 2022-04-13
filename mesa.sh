@@ -32,7 +32,12 @@ build_dpkg()
 {
     dpkg-buildpackage -b -us -uc
     cd $SRCSDIR; sudo dpkg -i *.deb
-    sudo rm -rv *.deb *.buildinfo *.changes *.udeb
+    if [ -d "$DIR" ]; then
+        cp -v *.deb *.buildinfo *.changes *.udeb $DIR-debfiles
+    else
+        mkdir $DIR-debfiles
+        cp -v *.deb *.buildinfo *.changes *.udeb $DIR-debfiles
+    fi
 }
 
 :<<'MYCOMMENT'
@@ -193,7 +198,7 @@ fi
 
 :<<'MYCOMMENT'
 ***SEATD***
-MYCOMMENT
+#MYCOMMENT
 
 if [ "$(dpkg -s  libseat1 | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD" ]; then
 let COUNTER++
@@ -217,10 +222,11 @@ if [ "$(dpkg -s  libseat1 | awk '/Version:/{gsub(",","");print $2}')" == "$vSTD"
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mSEATD is Up-to-Date\e[39m"
 fi
+MYCOMMENT
 
 :<<'MYCOMMENT'
 ***LIBINPUT***
-MYCOMMENT
+#MYCOMMENT
 
 if [ "$(dpkg -s  libinput-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vLI" ]; then
 let COUNTER++
@@ -244,6 +250,7 @@ if [ "$(dpkg -s  libinput-dev | awk '/Version:/{gsub(",","");print $2}')" == "$v
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mLIBINPUT is Up-to-Date\e[39m"
 fi
+MYCOMMENT
 
 :<<'MYCOMMENT'
 ***VULKAN HEADERS/LOADER***
@@ -386,7 +393,7 @@ fi
 
 :<<'MYCOMMENT'
 ***WLROOTS***
-MYCOMMENT
+#MYCOMMENT
 
 if [ "$(dpkg -s  libwlroots-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vWLR" ]; then
 let COUNTER++
@@ -413,6 +420,7 @@ if [ "$(dpkg -s  libwlroots-dev | awk '/Version:/{gsub(",","");print $2}')" == "
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mWLROOTS is Up-to-Date\e[39m"
 fi
+MYCOMMENT
 
 :<<'MYCOMMENT'
 ***VULKAN-TOOLS***
@@ -447,7 +455,7 @@ fi
 
 :<<'MYCOMMENT'
 ***SPIRV-HEADERS***
-MYCOMMENT
+#MYCOMMENT
 
 if [ "$(dpkg -s spirv-headers | awk '/Version:/{gsub(",","");print $2}')" != "$vSV" ]; then
 let COUNTER++
@@ -475,10 +483,11 @@ if [ "$(dpkg -s spirv-headers | awk '/Version:/{gsub(",","");print $2}')" == "$v
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mSPIRV-HEADERS is Up-to-Date\e[39m"
 fi
+MYCOMMENT
 
 :<<'MYCOMMENT'
 ***SPIRV-TOOLS***
-MYCOMMENT
+#MYCOMMENT
 
 if [ "$(dpkg -s spirv-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vSVT" ]; then
 let COUNTER++
@@ -506,10 +515,11 @@ if [ "$(dpkg -s spirv-tools | awk '/Version:/{gsub(",","");print $2}')" == "$vSV
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mSPIRV-HEADERS is Up-to-Date\e[39m"
 fi
+MYCOMMENT
 
 :<<'MYCOMMENT'
 ***VULKAN-VALIDATIONLAYERS***
-MYCOMMENT
+#MYCOMMENT
 
 if [ "$(dpkg -s vulkan-validationlayers | awk '/Version:/{gsub(",","");print $2}')" != "$vVK" ]; then
 let COUNTER++
@@ -537,6 +547,7 @@ if [ "$(dpkg -s vulkan-validationlayers | awk '/Version:/{gsub(",","");print $2}
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN-VALIDATIONLAYERS is Up-to-Date\e[39m"
 fi
+MYCOMMENT
 
 :<<'MYCOMMENT'
 ***SDL2***

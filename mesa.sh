@@ -10,7 +10,7 @@ COUNTER=0
 vDRM=2.4.110-2
 vGLVND=1.4.0-3
 vMESA=22.2.0-10
-vSDL=2.0.20+dfsg-3
+vSDL=2.23.1+dfsg-1
 vVK=1.3.218.0-1
 vWL=1.20.90-1
 vWLP=1.25-1
@@ -562,14 +562,14 @@ DIR="/home/bluestang/sources/SDL2"
 SDL="$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')"
 
 if [ -d "$DIR" ]; then
-    cd $DIR; git pull
+    cd $DIR; git checkout debian/$vSDL; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch release-$SDL https://github.com/libsdl-org/SDL.git SDL2
+    cd $SRCSDIR; git clone --single-branch --branch debian/$vSDL https://salsa.debian.org/sdl-team/libsdl2.git SDL2
     cd $DIR; sudo rm -r debian
 fi
-    svn checkout $SVN/SDL/debian
+    svn checkout $SVN/SDL2/debian
     cd $DIR/debian; sudo rm -r changelog
-    wget https://salsa.debian.org/sdl-team/libsdl2/-/raw/master/debian/changelog
+    wget https://salsa.debian.org/sdl-team/libsdl2/-/raw/debian/$vSDL/debian/changelog
     cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vSDL "Upstream SDL2"
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SDL2\e[39m"

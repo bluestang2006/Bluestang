@@ -11,7 +11,7 @@ vDRM=2.4.113-3
 vGLVND=1.5.0-1
 vMESA=23.0.0-3
 vSDL=2.24.2+dfsg-1
-vVK=1.3.235.0-1
+vVK=1.3.235.0-2
 vWL=1.21.90-1
 vWLP=1.26-1
 vWLR=0.16.0-3
@@ -265,12 +265,11 @@ DIR="/home/bluestang/sources/vulkan-loader"
 VK="$(echo v$vVK | awk '{ print substr( $0, 1, length($0)-4 ) }')"
 
 if [ -d "$DIR" ]; then
-    cd $DIR; git pull; cd vulkan-headers; git pull; cd $DIR
+    cd $DIR; git pull;
 else
     cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan-loader
-    cd $DIR; git clone https://github.com/KhronosGroup/Vulkan-Headers.git vulkan-headers;
 fi
-    git checkout $VK; cd vulkan-headers; git checkout $VK; cd $DIR
+    git checkout $VK; cd $DIR
     svn checkout $SVN/vulkan/debian
     cd $DIR/debian; sudo rm -r changelog
     wget $XORG/vulkan/vulkan-loader/-/$LOG

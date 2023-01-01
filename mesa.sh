@@ -9,7 +9,7 @@ MYCOMMENT
 COUNTER=0
 vDRM=2.4.113-3
 vGLVND=1.5.0-1
-vMESA=23.0.0-5
+vMESA=23.0.0-6
 vSDL=2.24.2+dfsg-1
 vVK=1.3.235.0-2
 vWL=1.21.90-1
@@ -374,7 +374,7 @@ DIR="/home/bluestang/sources/mesa-vulkan"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch main https://gitlab.freedesktop.org/mesa.git mesa-vulkan
+    cd $SRCSDIR; git clone --single-branch --branch main https://gitlab.freedesktop.org/mesa/mesa.git mesa-vulkan
     cd $DIR
 fi
     svn checkout $SVN/mesa/debian

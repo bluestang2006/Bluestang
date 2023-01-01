@@ -374,7 +374,7 @@ DIR="/home/bluestang/sources/mesa-vulkan"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch main https://gitlab.freedesktop.com/mesa.git mesa-vulkan
+    cd $SRCSDIR; git clone --single-branch --branch main https://gitlab.freedesktop.org/mesa.git mesa-vulkan
     cd $DIR
 fi
     svn checkout $SVN/mesa/debian

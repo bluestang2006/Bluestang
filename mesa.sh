@@ -7,17 +7,17 @@
 MYCOMMENT
 
 COUNTER=0
-vDRM=2.4.113-3
-vGLVND=1.5.0-1
-vMESA=23.0.0-6
-vSDL=2.24.2+dfsg-1
-vVK=1.3.235.0-2
+vDRM=2.4.114-1
+vGLVND=1.6.0-1
+vMESA=23.1.0-1
+vSDL=2.26.2+dfsg-1
+vVK=1.3.238.0-1
 vWL=1.21.0-1
-vWLP=1.26-1
+vWLP=1.31-1
 vWLR=0.16.0-3
 vSTD=0.6.4-1
 vLI=1.21.0-1
-vMSN=0.62.0-1
+vMSN=1.0.0-1.1
 vLD=0.1.0-3
 vSV=1.6.1+1.3.226.0-1
 vSVT=2022.3-1
@@ -94,13 +94,13 @@ fi
 MYCOMMENT
 
 if [ "$(dpkg -s meson | awk '/Version:/{gsub(",","");print $2}')" != "$vMSN" ]; then
-cd $SRCSDIR
+cd $SRCSDIR; mkdir meson-debfiles; cd meson-debfiles
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet MESON v$vMSN\e[39m"
     wget http://http.us.debian.org/debian/pool/main/m/meson/meson_"$vMSN"_all.deb
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mInstall MESON v$vMSN\e[39m"
-    sudo dpkg -i *.deb; sudo rm -v *.deb
+    sudo dpkg -i *.deb; cd $SRCSDIR
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mMESON is Up-to-Date\e[39m"
 else
@@ -148,14 +148,10 @@ DIR="/home/bluestang/sources/wayland"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone https://gitlab.freedesktop.org/wayland/wayland.git wayland
+    cd $SRCSDIR; https://salsa.debian.org/xorg-team/wayland/wayland.git wayland
     cd $DIR
 fi
-
-    svn checkout $SVN/wayland/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/wayland/wayland/-/$LOG
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vWL "Upstream WAYLAND"
+    git checkout wayland-$vWL
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WAYLAND\e[39m"
     build_dpkg
@@ -179,14 +175,10 @@ DIR="/home/bluestang/sources/wayland-protocols"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone https://gitlab.freedesktop.org/wayland/wayland-protocols.git wayland-protocols
+    cd $SRCSDIR; https://salsa.debian.org/xorg-team/wayland/wayland-protocols.git wayland-protocols
     cd $DIR
 fi
-
-    svn checkout $SVN/wayland-protocols/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/wayland/wayland-protocols/-/$LOG
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vWLP "Upstream WAYLAND PROTOCOLS"
+    git checkout wayland-protocols-$vWLP
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild WAYLAND PROTOCOLS\e[39m"
     build_dpkg
@@ -297,14 +289,10 @@ DIR="/home/bluestang/sources/mesa-drm"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch main https://github.com/freedesktop/mesa-drm.git mesa-drm
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/lib/libdrm.git mesa-drm
     cd $DIR
 fi
-
-    svn checkout $SVN/libdrm/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/lib/libdrm/-/$LOG
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vDRM "Upstream LIBDRM"
+    git checkout libdrm-$vDRM
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild MESA DRM\e[39m"
     build_dpkg
@@ -313,18 +301,6 @@ fi
 if [ "$(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}')" == "$vDRM" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mMESA DRM is Up-to-Date\e[39m"
-fi
-
-DIR="/opt/retropie/supplementary/mesa-drm"
-
-if [ -d "$DIR" ]; then
-let COUNTER++
-echo -e "\e[1m\e[94m$COUNTER. \e[96mCopy MESA DRM to RetroPie\e[39m"
-    sudo cp -v /usr/lib/aarch64-linux-gnu/libdrm.so.2.4.0 /opt/retropie/supplementary/mesa-drm
-    cd $DIR; sudo ln -sf libdrm.so.2.4.0 libdrm.so.2
-else
-let COUNTER++
-echo -e "\e[1m\e[94m$COUNTER. \e[96mRetroPie Not Installed - Moving On\e[39m"
 fi
 
 :<<'MYCOMMENT'
@@ -339,18 +315,15 @@ if [ "$(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}')" != "$vGLVN
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBGLVND\e[39m" 
 
-DIR="/home/bluestang/sources/mesa-glvnd"
+DIR="/home/bluestang/sources/libglvnd"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch master https://github.com/NVIDIA/libglvnd.git mesa-glvnd
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/lib/libglvnd.git libglvnd
     cd $DIR
 fi
-    svn checkout $SVN/libglvnd/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/lib/libglvnd/-/$LOG
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vGLVND "Upstream LIBGLVND"
+    git checkout libglvnd-$vGLVND
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild LIBGLVND\e[39m"
     build_dpkg
@@ -369,12 +342,12 @@ if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" != "$vMESA" 
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet V3DV\e[39m"
 
-DIR="/home/bluestang/sources/mesa-vulkan"
+DIR="/home/bluestang/sources/mesa"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch main https://gitlab.freedesktop.org/mesa/mesa.git mesa-vulkan
+    cd $SRCSDIR; git clone --single-branch --branch main https://gitlab.freedesktop.org/mesa/mesa.git mesa
     cd $DIR
 fi
     svn checkout $SVN/mesa/debian
@@ -561,15 +534,11 @@ DIR="/home/bluestang/sources/SDL2"
 SDL="$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')"
 
 if [ -d "$DIR" ]; then
-    cd $DIR; git checkout debian/$vSDL; git pull
+    cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch debian/$vSDL https://salsa.debian.org/sdl-team/libsdl2.git SDL2
-    cd $DIR; sudo rm -r debian
+    cd $SRCSDIR; git clone https://salsa.debian.org/sdl-team/libsdl2.git SDL2
 fi
-    svn checkout $SVN/SDL2/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget https://salsa.debian.org/sdl-team/libsdl2/-/raw/debian/$vSDL/debian/changelog
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vSDL "Upstream SDL2"
+    git checkout debian/$vSDL
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild SDL2\e[39m"
     build_dpkg

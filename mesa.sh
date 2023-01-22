@@ -259,14 +259,9 @@ VK="$(echo v$vVK | awk '{ print substr( $0, 1, length($0)-4 ) }')"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
 else
-    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Loader.git vulkan-loader
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/vulkan/vulkan-loader.git vulkan-loader
 fi
-    git checkout $VK; cd $DIR
-    svn checkout $SVN/vulkan/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/vulkan/vulkan-loader/-/$LOG
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vVK "Upstream VULKAN"
-let COUNTER++
+    git checkout $vVK
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN\e[39m"
     build_dpkg
 fi
@@ -408,14 +403,10 @@ DIR="/home/bluestang/sources/vulkan-tools"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
 else
-    cd $SRCSDIR; git clone https://github.com/KhronosGroup/Vulkan-Tools.git vulkan-tools
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/vulkan/vulkan-tools.git vulkan-tools
     cd $DIR
 fi
-    git checkout $VK
-    svn checkout $SVN/vulkan-tools/debian
-    cd $DIR/debian; sudo rm -r changelog
-    wget $XORG/vulkan/vulkan-tools/-/$LOG
-    cd $DIR; DEBEMAIL="Bluestang <bluestang2006@gmail.com>" dch -v $vVK "Upstream VULKAN TOOLS"
+    git checkout $vVK
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN TOOLS\e[39m"
     build_dpkg

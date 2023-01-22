@@ -7,18 +7,20 @@
 MYCOMMENT
 
 COUNTER=0
+vMSN=1.0.0-1.1
+vLD=0.1.1-1
+vWL=1.21.0-1
+vWLP=1.31-1
+vVK=1.3.236.0-2
 vDRM=2.4.114-1
 vGLVND=1.6.0-1
 vMESA=23.1.0-1
+vVKT=1.3.236.0+dfsg1-1
 vSDL=2.26.2+dfsg-1
-vVK=1.3.236.0-2
-vWL=1.21.0-1
-vWLP=1.31-1
+
 vWLR=0.16.0-3
 vSTD=0.6.4-1
 vLI=1.21.0-1
-vMSN=1.0.0-1.1
-vLD=0.1.1-1
 vSV=1.6.1+1.3.226.0-1
 vSVT=2022.3-1
 
@@ -395,7 +397,7 @@ MYCOMMENT
 ***VULKAN-TOOLS***
 MYCOMMENT
 
-if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vVK" ]; then
+if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vVKT" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN TOOLS\e[39m" 
 
@@ -407,13 +409,13 @@ else
     cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/vulkan/vulkan-tools.git vulkan-tools
     cd $DIR
 fi
-    git checkout vulkan-tools-"$(echo $vVK | awk '{ print substr( $0, 1, length($0)-2 ) }')"+dfsg1-1
+    git checkout vulkan-tools-$vVKT
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN TOOLS\e[39m"
     build_dpkg
 fi
 
-if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" == "$vVK" ]; then
+if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" == "$vVKT" ]; then
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mVULKAN TOOLS is Up-to-Date\e[39m"
 fi

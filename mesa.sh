@@ -260,6 +260,7 @@ if [ -d "$DIR" ]; then
     cd $DIR; git pull;
 else
     cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/vulkan/vulkan-loader.git vulkan-loader
+    cd $DIR
 fi
     git checkout $vVK
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN\e[39m"

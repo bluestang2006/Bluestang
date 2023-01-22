@@ -18,7 +18,7 @@ vWLR=0.16.0-3
 vSTD=0.6.4-1
 vLI=1.21.0-1
 vMSN=1.0.0-1.1
-vLD=0.1.0-3
+vLD=0.1.1-1
 vSV=1.6.1+1.3.226.0-1
 vSVT=2022.3-1
 
@@ -121,10 +121,10 @@ DIR="/home/bluestang/sources/libdecor-0"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone --single-branch --branch debian/latest https://salsa.debian.org/sdl-team/libdecor-0.git libdecor-0
+    cd $SRCSDIR; git clone https://salsa.debian.org/sdl-team/libdecor-0.git libdecor-0
     cd $DIR
 fi
-
+    git checkout debian/0.1.1-1
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild LIBDECOR\e[39m"
     build_dpkg
@@ -148,7 +148,7 @@ DIR="/home/bluestang/sources/wayland"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; https://salsa.debian.org/xorg-team/wayland/wayland.git wayland
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/wayland/wayland.git wayland
     cd $DIR
 fi
     git checkout wayland-$vWL
@@ -175,7 +175,7 @@ DIR="/home/bluestang/sources/wayland-protocols"
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; https://salsa.debian.org/xorg-team/wayland/wayland-protocols.git wayland-protocols
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/wayland/wayland-protocols.git wayland-protocols
     cd $DIR
 fi
     git checkout wayland-protocols-$vWLP

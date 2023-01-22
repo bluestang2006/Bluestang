@@ -262,7 +262,7 @@ else
     cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/vulkan/vulkan-loader.git vulkan-loader
     cd $DIR
 fi
-    git checkout $vVK
+    git checkout vulkan-loader-$vVK
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN\e[39m"
     build_dpkg
 fi
@@ -407,7 +407,7 @@ else
     cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/vulkan/vulkan-tools.git vulkan-tools
     cd $DIR
 fi
-    git checkout $vVK
+    git checkout vulkan-tools-"$(echo $vVK | awk '{ print substr( $0, 1, length($0)-2 ) }')"+dfsg1-1
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mBuild VULKAN TOOLS\e[39m"
     build_dpkg

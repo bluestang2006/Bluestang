@@ -280,12 +280,12 @@ if [ "$(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}')" != "$vDRM" ]
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet MESA DRM\e[39m" 
 
-DIR="/home/bluestang/sources/mesa-drm"
+DIR="/home/bluestang/sources/libdrm"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
 else
-    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/lib/libdrm.git mesa-drm
+    cd $SRCSDIR; git clone https://salsa.debian.org/xorg-team/lib/libdrm.git libdrm
     cd $DIR
 fi
     git checkout libdrm-$vDRM

@@ -11,12 +11,12 @@ vMSN=1.0.0-1.1
 vLD=0.1.1-1
 vWL=1.21.0-1
 vWLP=1.31-1
-vVK=1.3.236.0-2
+vVK=1.3.239.0-1
 vDRM=2.4.114-1
 vGLVND=1.6.0-1
-vMESA=23.1.0-1
-vVKT=1.3.236.0+dfsg1-1
-vSDL=2.26.2+dfsg-1
+vMESA=23.2.0-1
+vVKT=1.3.239.0+dfsg1-1
+vSDL=2.26.5+dfsg-1
 
 vWLR=0.16.0-3
 vSTD=0.6.4-1
@@ -85,10 +85,10 @@ echo -e "\e[1m\e[94m$COUNTER. \e[96mInstalling Dependencies\e[39m"
 fi
 
 if [ -d "$HOME/sources" ]; then
-    SRCSDIR="/home/bluestang/sources/"
+    SRCSDIR="$HOME/sources/"
 else
     cd $HOME; mkdir sources
-    SRCSDIR="/home/bluestang/sources/"
+    SRCSDIR="$HOME/sources/"
 fi
 
 :<<'MYCOMMENT'
@@ -118,7 +118,7 @@ if [ "$(dpkg -s  libdecor-0-dev | awk '/Version:/{gsub(",","");print $2}')" != "
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBDECOR\e[39m"
 
-DIR="/home/bluestang/sources/libdecor-0"
+DIR="$HOME/sources/libdecor-0"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -145,7 +145,7 @@ if [ "$(dpkg -s libwayland-dev | awk '/Version:/{gsub(",","");print $2}')" != "$
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WAYLAND\e[39m"
 
-DIR="/home/bluestang/sources/wayland"
+DIR="$HOME/sources/wayland"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -172,7 +172,7 @@ if [ "$(dpkg -s wayland-protocols | awk '/Version:/{gsub(",","");print $2}')" !=
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WAYLAND PROTOCOLS\e[39m"
 
-DIR="/home/bluestang/sources/wayland-protocols"
+DIR="$HOME/sources/wayland-protocols"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -199,7 +199,7 @@ if [ "$(dpkg -s  libseat1 | awk '/Version:/{gsub(",","");print $2}')" != "$vSTD"
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SEATD\e[39m"
 
-DIR="/home/bluestang/sources/seatd"
+DIR="$HOME/sources/seatd"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -227,7 +227,7 @@ if [ "$(dpkg -s  libinput-dev | awk '/Version:/{gsub(",","");print $2}')" != "$v
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBINPUT\e[39m"
 
-DIR="/home/bluestang/sources/libinput"
+DIR="$HOME/sources/libinput"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -255,7 +255,7 @@ if [ "$(dpkg -s libvulkan-dev | awk '/Version:/{gsub(",","");print $2}')" != "$v
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN\e[39m"
 
-DIR="/home/bluestang/sources/vulkan-loader"
+DIR="$HOME/sources/vulkan-loader"
 VK="$(echo v$vVK | awk '{ print substr( $0, 1, length($0)-4 ) }')"
 
 if [ -d "$DIR" ]; then
@@ -282,7 +282,7 @@ if [ "$(dpkg -s libdrm2 | awk '/Version:/{gsub(",","");print $2}')" != "$vDRM" ]
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet MESA DRM\e[39m" 
 
-DIR="/home/bluestang/sources/libdrm"
+DIR="$HOME/sources/libdrm"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -313,7 +313,7 @@ if [ "$(dpkg -s libglvnd0 | awk '/Version:/{gsub(",","");print $2}')" != "$vGLVN
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet LIBGLVND\e[39m" 
 
-DIR="/home/bluestang/sources/libglvnd"
+DIR="$HOME/sources/libglvnd"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -340,7 +340,7 @@ if [ "$(dpkg -s libgbm1 | awk '/Version:/{gsub(",","");print $2}')" != "$vMESA" 
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet V3DV\e[39m"
 
-DIR="/home/bluestang/sources/mesa"
+DIR="$HOME/sources/mesa"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -370,7 +370,7 @@ if [ "$(dpkg -s  libwlroots-dev | awk '/Version:/{gsub(",","");print $2}')" != "
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet WLROOTS\e[39m"
 
-DIR="/home/bluestang/sources/wlroots"
+DIR="$HOME/sources/wlroots"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull
@@ -401,7 +401,7 @@ if [ "$(dpkg -s vulkan-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vV
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN TOOLS\e[39m" 
 
-DIR="/home/bluestang/sources/vulkan-tools"
+DIR="$HOME/sources/vulkan-tools"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
@@ -428,7 +428,7 @@ if [ "$(dpkg -s spirv-headers | awk '/Version:/{gsub(",","");print $2}')" != "$v
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SPIRV-HEADERS\e[39m" 
 
-DIR="/home/bluestang/sources/spirv-headers"
+DIR="$HOME/sources/spirv-headers"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
@@ -460,7 +460,7 @@ if [ "$(dpkg -s spirv-tools | awk '/Version:/{gsub(",","");print $2}')" != "$vSV
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SPIRV-TOOLS\e[39m" 
 
-DIR="/home/bluestang/sources/spirv-tools"
+DIR="$HOME/sources/spirv-tools"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
@@ -492,7 +492,7 @@ if [ "$(dpkg -s vulkan-validationlayers | awk '/Version:/{gsub(",","");print $2}
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet VULKAN-VALIDATIONLAYERS\e[39m" 
 
-DIR="/home/bluestang/sources/vulkan-layers"
+DIR="$HOME/sources/vulkan-layers"
 
 if [ -d "$DIR" ]; then
     cd $DIR; git pull;
@@ -524,7 +524,7 @@ if [ "$(dpkg -s libsdl2-dev | awk '/Version:/{gsub(",","");print $2}')" != "$vSD
 let COUNTER++
 echo -e "\e[1m\e[94m$COUNTER. \e[96mGet SDL2\e[39m"
 
-DIR="/home/bluestang/sources/SDL2"
+DIR="$HOME/sources/SDL2"
 SDL="$(echo $vSDL | awk '{ print substr( $0, 1, length($0)-7 ) }')"
 
 if [ -d "$DIR" ]; then
